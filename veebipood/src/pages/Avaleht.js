@@ -1,44 +1,41 @@
-import { useState } from "react";
+// import { useState } from "react";
 
 function Avaleht() {
-      // HTMLi saan tagantjärgi AINULT useState abil muuta
-  const [muutuja, funktsioon] = useState("muutuja algväärtus");
-  const [word, setWord] = useState("sõnaline muutuja");
-  const [numbriline, uuendaNumbrilist] = useState(12312);
-  const [kahendV22rtus, uuendaBooleani] = useState(true);
+  const lisatudToode = localStorage.getItem("toode");
 
-  // let muutuja2 = "muutuja algväärtus2";
+  // kuvan massiivina kõik tooted välja
+  // JSON.parse()
+  // .map() --- Reactis massiivi väljakuvamiseks (näitab mingit kindlat HTMLi blokki täpselt nii mitu korda
+  //    kui palju on erinevaid elemente massiivi sees)
+  // teeme igale tootele nupu ostukorvi lisamiseks
 
-  // function funktsioon2() {
-  //   muutuja2 = "uus väärtus2";
-  //   console.log(muutuja2);
-  // }
-
-  function muudaK6ik() {
-    funktsioon("kolmas väärtus");
-    setWord("kolmas väärtus");
-    uuendaNumbrilist("kolmas väärtus");
-    uuendaBooleani("kolmas väärtus");
-  }
-
+  // nupuvajutusega läheb sessionStorage-sse mingi kindla võtmega ja massiivina
+  // Ostukorvi lehe ja seal kuvan ka .map() abil ostukorvi tooteid
+  // useState abil muudan ostukorvi sisu silme ees
+  // muudan ostukorvi sisu erinevate nuppudega - / +
+  // + --- .push()   w3schools / mozilla
+  // - --- .splice(järjekorranumbri, mitu-tükki)   w3schools / mozilla
+  // kokkuarvutus mitu toodet mul on: massiivile .length   w3schools / mozilla
   return (
   <div>
-    <button onClick={() => muudaK6ik()}>Muuda kõiki</button>
-    <div>{muutuja}</div>
-    <div>{word}</div>
-    <div>{word + word}</div>
-    <div>{numbriline}</div>
-    <div>{numbriline + numbriline}</div>
-    <div>{word + numbriline}</div>
-   { numbriline < 8000 && <div>TERTERETER{kahendV22rtus + kahendV22rtus}</div>}
-    {/* <div>{muutuja2}</div> */}
-    {kahendV22rtus && <button onClick={() => setWord("sõnalise muutuja uus väärtus")}>Muuda sõna</button>}
-    <button onClick={() => uuendaNumbrilist(4121)}>Muuda numbrit</button>
-    <button onClick={() => uuendaBooleani(false)}>Muuda booleani</button>
-    <button onClick={() => funktsioon("uus väärtus")}>Muuda muutujat nr1</button>
-
-    {/* <button onClick={() => funktsioon2()}>Muuda muutujat nr2</button> */}
+    Lisatud tooted massiivina: {lisatudToode}
   </div>);
 }
 
 export default Avaleht;
+
+// 1.tavalised sulud on funktsioonide jaoks, funktsiooni nime järel
+//            funktsioonist on võimalik parameetreid vastu võtta
+// kollast värvi on funktsioonid
+// sulud tekitavad ka komplekti millestki
+// tehete järjekord
+// if-l tavaliste sulgudega kontrollin kas on õige või väärt
+
+// 2. loogelised sulud on:
+//    * funktsioonide sisu jaoks (funktsiooni koodilõik on loogelisest sulust loogelise suluni)
+//    * if sisu jaoks (if koodilõik on loogelisest sulust loogelise suluni)
+//    * import juures defineerib loogeline sulg, et võetakse kasutusele tükk sellest node_module osast
+//    * objektide jaoks, sidumaks kokku võtmeid ja väärtusi
+//    * JavaScripti tähistuseks HTMLi sees
+
+// 3. kandilised sulud on massiivide jaoks
