@@ -1,21 +1,27 @@
 import { useRef, useState } from "react";
 
 function LisaToode() {
+  console.log("olen lisa toode lehel");
+
   // useState
   const [s6numKasutajale, m22raS6num] = useState("");
   const toodeRef = useRef();
 
   function lisaUusToode() {
     // useRef
+    console.log("alustasin funktsiooni");
     console.log(toodeRef.current.value);
     if (toodeRef.current.value === "") {
+      console.log("ref oli tühi???");
       m22raS6num("Sisestasid tühjuse, ei saanud lisada"); // useState funktsioon
     } else {
+      console.log("ref ei olnud tühi, jätkan")
       m22raS6num("Toode edukalt lisatud"); // useState funktsioon
       let tooted = []; // tehakse uus muutuja, mis on tühi massiiv
       if (localStorage.getItem("toode") !== null) {
                             // "["cows"]"
                 // JSON.parse("["cows"]")   --> ["cows"]
+        console.log("localStorage-st saadud ei ole null ehk tühjus");
         tooted = JSON.parse(localStorage.getItem("toode"));
       }
       // [].push("cows")--> ["cows"]
@@ -23,8 +29,9 @@ function LisaToode() {
         //   key      |      value
         // "toode"    |   "["cows"]"
       localStorage.setItem("toode", JSON.stringify(tooted));
+      console.log("lõpetasin else bloki")
     }
- 
+    console.log("lõpetasin funktsiooni");
   }
 
   return (

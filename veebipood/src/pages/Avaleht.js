@@ -1,7 +1,9 @@
 // import { useState } from "react";
 
 function Avaleht() {
-  const lisatudToode = localStorage.getItem("toode");
+  console.log("olen avalehel");
+                        // kui siit tuleb tühjus,              siis võta tühi massiiv
+  const lisatudTooted = JSON.parse(localStorage.getItem("toode")) || [];
 
   // kuvan massiivina kõik tooted välja
   // JSON.parse()
@@ -16,9 +18,30 @@ function Avaleht() {
   // + --- .push()   w3schools / mozilla
   // - --- .splice(järjekorranumbri, mitu-tükki)   w3schools / mozilla
   // kokkuarvutus mitu toodet mul on: massiivile .length   w3schools / mozilla
+
+                      // "SPrite"
+  function lisaOstukorvi(element) {
+    console.log("asdasd");
+    console.log(element);  //  -> rida 25:  "SPrite"
+    // let ostukorviTooted = [];
+    // if (sessionStorage.getItem("ostukorviTooted")) {
+    //   ostukorviTooted = JSON.parse(sessionStorage.getItem("ostukorviTooted"));
+    // }
+        //  ["Coca cola", "Fanta"]  VÕI  []
+    const ostukorviTooted = JSON.parse(sessionStorage.getItem("ostukorviTooted")) || [];
+        //  ["Coca cola", "Fanta", "SPrite"]  VÕI  ["SPrite"]
+    ostukorviTooted.push(element);
+                                        // "["Coca cola", "Fanta", "SPrite"]"
+    sessionStorage.setItem("ostukorviTooted", JSON.stringify(ostukorviTooted));
+  }
+
   return (
   <div>
-    Lisatud tooted massiivina: {lisatudToode}
+    {lisatudTooted.map(element => 
+      <div key={element}>
+        {element}
+        <button onClick={() => lisaOstukorvi(element)}>Lisa {element} ostukorvi</button>
+      </div>)}
   </div>);
 }
 
