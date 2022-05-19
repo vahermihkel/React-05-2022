@@ -29,7 +29,7 @@ function Avaleht() {
     // }
         //  ["Coca cola", "Fanta"]  VÕI  []
     const ostukorviTooted = JSON.parse(sessionStorage.getItem("ostukorviTooted")) || [];
-        //  ["Coca cola", "Fanta", "SPrite"]  VÕI  ["SPrite"]
+        //  [{nimi: "Coca cola", hind: 5}, "Fanta", "SPrite"]  VÕI  ["SPrite"]
     ostukorviTooted.push(element);
                                         // "["Coca cola", "Fanta", "SPrite"]"
     sessionStorage.setItem("ostukorviTooted", JSON.stringify(ostukorviTooted));
@@ -38,9 +38,9 @@ function Avaleht() {
   return (
   <div>
     {lisatudTooted.map(element => 
-      <div key={element}>
-        {element}
-        <button onClick={() => lisaOstukorvi(element)}>Lisa {element} ostukorvi</button>
+      <div key={element.nimi}>
+        {element.nimi} ({element.hind} €)
+        <button onClick={() => lisaOstukorvi(element)}>Lisa {element.nimi} ostukorvi</button>
       </div>)}
   </div>);
 }

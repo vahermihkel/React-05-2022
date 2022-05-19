@@ -19,7 +19,16 @@ function Ostukorv() {
     console.log(ostukorviEsemed);
     // uuendaOstukorv();
     uuendaOstukorvi(ostukorviEsemed.slice());
+    // console.log(ostukorviEsemed === ostukorviEsemed); // true
+    // console.log(ostukorviEsemed.slice() === ostukorviEsemed); // false
     sessionStorage.setItem("ostukorviTooted",JSON.stringify(ostukorviEsemed));   
+
+    // ["BMW", "Audi", "Volvo"]
+    // .splice(index,mitu-tükki-kustutada,mida-asemele-panna1,2,3) -- kustutamiseks, asendamiseks - arrayle/listile
+    //      ühe elemendi juurde lisamiseks - .splice(2,0,"Saab") --> ["BMW", "Audi", "Saab", "Volvo"]
+    // .slice() -- array'st/listist teeb koopia     ostukorviEsemed2 -> uuendaOstukorvi() -> ostukorviEsemed
+    //      kustutab mälukoha
+    // .split() -- "Elas metsas mutionu, keset kuuski"  .split("a")  ->  ["El", "s mets", "s mut....."];
   }
 
   const lisaOstukorvi = (element) => {
@@ -39,7 +48,7 @@ function Ostukorv() {
    { ostukorviEsemed.length === 0 && <div>Ostukorv on tühi</div>}
     {ostukorviEsemed.map(element => 
       <div>
-        {element}
+         {element.nimi} ({element.hind} €)
         <button onClick={() => kustutaOstukorvist(element)}>X</button>
         <button onClick={() => lisaOstukorvi(element)}>+</button>
       </div>)}
