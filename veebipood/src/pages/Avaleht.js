@@ -1,5 +1,7 @@
 // import { useState } from "react";
 
+import { Link } from "react-router-dom";
+
 function Avaleht() {
   console.log("olen avalehel");
                         // kui siit tuleb tühjus,              siis võta tühi massiiv
@@ -39,7 +41,9 @@ function Avaleht() {
   <div>
     {lisatudTooted.map(element => 
       <div key={element.nimi}>
-        {element.nimi} ({element.hind} €)
+        <Link to={"toode/" + element.nimi.toLowerCase().replaceAll(" ","-").replaceAll(",", "").replaceAll("õ","o")}>
+          {element.nimi} ({element.hind} €)
+        </Link>
         <button onClick={() => lisaOstukorvi(element)}>Lisa {element.nimi} ostukorvi</button>
       </div>)}
   </div>);

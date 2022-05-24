@@ -42,6 +42,38 @@ function Ostukorv() {
     sessionStorage.setItem("ostukorviTooted",JSON.stringify([]));   
   }
 
+  const arvutaKoguSumma = () => {
+    let koguSumma = 0;
+      //[{nimi: "Coca cola", hind: 5},{nimi: "Fanta", hind: 2},{nimi: "Fanta", hind: 3}]
+      // forEach({nimi: "Coca cola", hind: 5} =>  5  = 0 + 5  )
+      //         {nimi: "Fanta", hind: 2} =>  7  = 5 + 2
+      //         {nimi: "Fanta", hind: 3} =>  10  = 7 + 3
+    ostukorviEsemed.forEach(element => koguSumma = koguSumma + Number(element.hind));
+    return koguSumma;
+  }
+
+  const maksma = () => {
+    const makseAndmed = {
+      "api_username": "92ddcfab96e34a5f",
+      "account_name": "EUR3D1",
+      "amount": arvutaKoguSumma(), // koguVanus
+      "order_reference": Math.floor(Math.random()*899999+100000), 
+      "nonce": "a9b7fsa" + new Date() + Math.floor(Math.random()*899999+100000),
+      "timestamp": new Date(),
+      "customer_url": "https://react-05-2022.web.app" // oma aadress
+    }
+      
+    fetch("https://igw-demo.every-pay.com/api/v4/payments/oneoff",{
+      method: "POST",
+      body: JSON.stringify(makseAndmed),
+      headers: {
+        "Authorization": "Basic OTJkZGNmYWI5NmUzNGE1Zjo4Y2QxOWU5OWU5YzJjMjA4ZWU1NjNhYmY3ZDBlNGRhZA==",
+        "Content-Type": "application/json"
+      }
+    }).then(tagastus => tagastus.json())
+      .then(sisu => window.location.href = sisu.payment_link);
+  }
+
   return (<div>
    { ostukorviEsemed.length > 0 && <div>Ostukorvis on {ostukorviEsemed.length} toodet</div>}
    { ostukorviEsemed.length > 0 && <button onClick={() => tyhjenda()}>Tühjenda</button>}
@@ -52,6 +84,8 @@ function Ostukorv() {
         <button onClick={() => kustutaOstukorvist(element)}>X</button>
         <button onClick={() => lisaOstukorvi(element)}>+</button>
       </div>)}
+     { ostukorviEsemed.length > 0 && <div>SUMMA KOKKU: {arvutaKoguSumma()} €</div>}
+     { ostukorviEsemed.length > 0 && <button onClick={() => maksma()}>MAKSMA</button>}
   </div>);
 }
 

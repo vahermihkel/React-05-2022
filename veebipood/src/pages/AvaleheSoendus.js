@@ -1,5 +1,24 @@
 import { useState } from "react";
 
+// 1. kokkuarvutuse ostukorvis
+//        arvuta tegelaste vanused kokku
+//        arvuta tegelaste keskmine vanus   kokku / arv
+// 2. ühte toodet näeb klikides avalehel ja läheb uuele lehele 
+//        klikkides tegelasele, näeb tegelase lehte
+// 3. EveryPay-s makse (testkeskkonnas)
+//        makse läbi teha (tegelaste vanused kokku)
+// NELJAPÄEV
+// 4. Eseme muutmine -- ühe toote vaatamine + toote lisamine
+//        tegelase muutmine
+// 5. Andmebaasi ühendus (Firebase - avalik)
+
+// TEISIPÄEV
+// 6. uus inglise keelne projekt
+// 7. Bootstrap (kujundus, tõlge)
+
+// NELJAPÄEV
+// 8. Ostukorvis kogustega
+
 function AvaleheSoendus() {
       // HTMLi saan tagantjärgi AINULT useState abil muuta
   // const [muutuja, funktsioon] = useState("muutuja algväärtus");
