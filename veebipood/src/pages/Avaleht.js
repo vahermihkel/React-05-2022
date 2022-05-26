@@ -1,12 +1,32 @@
 // import { useState } from "react";
 
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Avaleht() {
   console.log("olen avalehel");
                         // kui siit tuleb tühjus,              siis võta tühi massiiv
-  const lisatudTooted = JSON.parse(localStorage.getItem("toode")) || [];
+  // const lisatudTooted = JSON.parse(localStorage.getItem("toode")) || [];
+  const [lisatudTooted, uuendaTooted] = useState([]);
 
+  // useEffect - ära teist korda kui useState abil uuendatakse, seda funktsionaalsust tee
+  // fetch - automaatselt külge omadus: "mine edasi"
+  useEffect(()=>{
+    fetch("https://react-05-2022-default-rtdb.europe-west1.firebasedatabase.app/tooted.json")
+      .then(tagastus => tagastus.json())
+      .then(object => {
+        // {-N30Ak5V18-M4_yqRS_1: {…}, -N30B-UgExk6nYRQaiiS: {…}}  --> [{…},{…}]
+        // forin
+        const tootedAndmebaasist = [];
+        for (const key in object) {
+          // console.log(object[key]);
+          tootedAndmebaasist.push(object[key])
+        }
+        uuendaTooted(tootedAndmebaasist);
+        // tootedAndmebaasist = [{…},{…}]
+      })
+  },[]);
+ 
   // kuvan massiivina kõik tooted välja
   // JSON.parse()
   // .map() --- Reactis massiivi väljakuvamiseks (näitab mingit kindlat HTMLi blokki täpselt nii mitu korda

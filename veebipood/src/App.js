@@ -3,6 +3,7 @@ import './App.css';
 import Avaleht from './pages/Avaleht';
 import HaldaTooteid from './pages/HaldaTooteid';
 import LisaToode from './pages/LisaToode';
+import MuudaToode from './pages/MuudaToode';
 import Ostukorv from './pages/Ostukorv';
 import Poed from './pages/Poed';
 import YksikToode from './pages/YksikToode';
@@ -32,6 +33,7 @@ function App() {
         <Route path="halda-tooteid" exact element={ <HaldaTooteid /> } />
         <Route path="poed" exact element={ <Poed /> } />
         <Route path="toode/:nimi" exact element={ <YksikToode /> } />
+        <Route path="muuda/:tooteNimi" exact element={ <MuudaToode /> } />
       </Routes>
     </div>
   );

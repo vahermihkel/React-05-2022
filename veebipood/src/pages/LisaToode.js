@@ -18,23 +18,32 @@ function LisaToode() {
     } else if (hindRef.current.value < 0) {
       m22raS6num("Hind ei saa olla negatiivne");
     } else {
-      console.log("ref ei olnud tühi, jätkan")
+      const uusToode = {nimi: toodeRef.current.value, hind: hindRef.current.value};
+      fetch("https://react-05-2022-default-rtdb.europe-west1.firebasedatabase.app/tooted.json",{
+        method: "POST",
+        body: JSON.stringify(uusToode),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
       m22raS6num("Toode edukalt lisatud"); // useState funktsioon
-      let tooted = []; // tehakse uus muutuja, mis on tühi massiiv
-      if (localStorage.getItem("toode") !== null) {
-                            // "["cows"]"
-                // JSON.parse("["cows"]")   --> ["cows"]
-        console.log("localStorage-st saadud ei ole null ehk tühjus");
-        tooted = JSON.parse(localStorage.getItem("toode"));
-      }
-      // [].push("cows")--> ["cows"]
-      // ["Coca cola", "Fanta"].push({nimi: toodeRef.current.value, hind: hindRef.current.value});
-      // ["Coca cola", "Fanta"].push({nimi: "m", hind: 1});
-      tooted.push({nimi: toodeRef.current.value, hind: hindRef.current.value});
-        //   key      |      value
-        // "toode"    |   "["cows"]"
-      localStorage.setItem("toode", JSON.stringify(tooted));
-      console.log("lõpetasin else bloki")
+      // ctrl + ä
+      // console.log("ref ei olnud tühi, jätkan")
+      // let tooted = []; // tehakse uus muutuja, mis on tühi massiiv
+      // if (localStorage.getItem("toode") !== null) {
+      //                       // "["cows"]"
+      //           // JSON.parse("["cows"]")   --> ["cows"]
+      //   console.log("localStorage-st saadud ei ole null ehk tühjus");
+      //   tooted = JSON.parse(localStorage.getItem("toode"));
+      // }
+      // // [].push("cows")--> ["cows"]
+      // // ["Coca cola", "Fanta"].push({nimi: toodeRef.current.value, hind: hindRef.current.value});
+      // // ["Coca cola", "Fanta"].push({nimi: "m", hind: 1});
+      // tooted.push({nimi: toodeRef.current.value, hind: hindRef.current.value});
+      //   //   key      |      value
+      //   // "toode"    |   "["cows"]"
+      // localStorage.setItem("toode", JSON.stringify(tooted));
+      // console.log("lõpetasin else bloki")
     }
     console.log("lõpetasin funktsiooni");
   }
