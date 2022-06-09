@@ -14,6 +14,7 @@ function Home() {
       for (const key in body) {
         newArray.push(body[key])
       }
+      console.log(newArray);
       setProducts(newArray);
     })
   },[]);
