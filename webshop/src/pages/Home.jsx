@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
 
 function Home() {
   const productsUrl = "https://react-5-2022-default-rtdb.europe-west1.firebasedatabase.app/products.json";
@@ -33,6 +34,10 @@ function Home() {
     }
     cProducts = JSON.stringify(cProducts);
     sessionStorage.setItem("cartProducts", cProducts);
+    toast.success('Edukalt lisatud ostukorvi!', {
+      position: "bottom-right",
+      theme: "dark"
+      });
   }
 
   // 1. sessionStorage.getItem("") <--- võtan sessionStorage-st
@@ -41,14 +46,45 @@ function Home() {
   // 4. JSON.stringify()    <--- pean massiivi tegema jutumärkide kujule
   // 5. sessionStorage.setItem("VÕTI", UUED_TOOTED)   <--- pean panema sessionstorage-sse
 
-  return (<div>{ products.map(element => 
+  const sortAZ = () => {
+   products.sort((a,b) => a.name.localeCompare(b.name)); // .name
+    setProducts(products.slice());
+  }
+
+  const sortZA = () => {
+    products.sort((a,b) => b.name.localeCompare(a.name)); // .name
+    setProducts(products.slice());
+  }
+
+  const sortPriceAsc = () => {
+    products.sort((a,b) => a.price - b.price); // .price
+    setProducts(products.slice());
+  }
+
+  const sortPriceDesc = () => {
+    products.sort((a,b) => b.price - a.price); // .price
+    setProducts(products.slice());
+  }
+
+  return (
+  <div>
+    <button onClick={sortAZ}>Sorteeri A-Z</button>
+    <button onClick={sortZA}>Sorteeri Z-A</button>
+    <button onClick={sortPriceAsc}>Sorteeri hind kasvavalt</button>
+    <button onClick={sortPriceDesc}>Sorteeri hind kahanevalt</button>
     <div>
-      <img src={element.imgSrc} alt="" />
-      <div>{element.name}</div>
-      <div>{element.price}</div>
-      <button onClick={() => addToCart(element)}>Lisa ostukorvi</button>
-    </div>) 
-    }</div>)
+      { products.map(element => 
+      <div key={element.id}>
+        <img src={element.imgSrc} alt="" />
+        <div>{element.name}</div>
+        <div>{element.price}</div>
+        <button onClick={() => addToCart(element)}>Lisa ostukorvi</button>
+      </div>) 
+      }
+    </div>
+    <ToastContainer />
+  </div>
+    )
 }
 
 export default Home;

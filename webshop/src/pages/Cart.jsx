@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
 import "../css/cart.css";
 
 function Cart() {
@@ -9,11 +10,17 @@ function Cart() {
   const decreaseQuantity = (productClicked) => {
     const index = cartProducts.findIndex(element => element.product.id === productClicked.product.id);
     cartProducts[index].quantity = cartProducts[index].quantity - 1;
+    console.log("vähendasin quantityt:" + JSON.stringify(cartProducts[index]));
     if (cartProducts[index].quantity === 0) {
       removeFromCart(productClicked);
+    } else {
+      setCartProducts(cartProducts.slice());
+      sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+      toast.warning('Edukalt vähendatud kogust!', {
+        position: "bottom-right",
+        theme: "dark"
+        });
     }
-    setCartProducts(cartProducts.slice());
-    sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
   }
 
   const increaseQuantity = (productClicked) => {
@@ -21,13 +28,23 @@ function Cart() {
     cartProducts[index].quantity = cartProducts[index].quantity + 1;
     setCartProducts(cartProducts.slice());
     sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    toast.warning('Edukalt suurendatud kogust!', {
+      position: "bottom-right",
+      theme: "dark"
+      });
   }
 
   const removeFromCart = (productClicked) => { // MOZILLA --> findIndex()
-    const index = cartProducts.find(element => element.product.id === productClicked.product.id);
+     //.find --> {id: 313123123, name:"iPhone X", price: 231} --- .findIndex --> 3 // 313123123 === 313123123
+    const index = cartProducts.findIndex(element => element.product.id === productClicked.product.id);
+            //.find --> {id: 313123123, name:"iPhone X", price: 231}
     cartProducts.splice(index,1);
     setCartProducts(cartProducts.slice());
     sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    toast.error('Edukalt eemaldatud ostukorvist!', {
+      position: "bottom-right",
+      theme: "dark"
+      });
   }
 
 
@@ -35,7 +52,7 @@ function Cart() {
   return (<div>
     <button>Tühjenda --- KOJU</button>
     { cartProducts.map(element => 
-    <div className="cartProduct">
+    <div key={element.product.id} className="cartProduct">
       <img className="cartProductImg" src={element.product.imgSrc} alt="" />
       <div className="cartProductName">{element.product.name}</div>
       <div className="cartProductPrice">{element.product.price} €</div>
@@ -58,6 +75,7 @@ function Cart() {
       <br />
     </div>
     ) }
+     <ToastContainer />
     </div>)
 }
 
