@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useRef } from "react";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import "../css/cart.css";
@@ -6,6 +8,13 @@ function Cart() {
   const [cartProducts, setCartProducts] = useState(
         JSON.parse(sessionStorage.getItem("cartProducts")) || []
     );
+  const [parcelMachines, setParcelMachines] = useState([]);
+
+  useEffect(() => {
+    fetch("https://www.omniva.ee/locations.json")
+      .then(res => res.json())
+      .then(body => setParcelMachines(body))
+  },[]);
 
   const decreaseQuantity = (productClicked) => {
     const index = cartProducts.findIndex(element => element.product.id === productClicked.product.id);
@@ -39,6 +48,9 @@ function Cart() {
     const index = cartProducts.findIndex(element => element.product.id === productClicked.product.id);
             //.find --> {id: 313123123, name:"iPhone X", price: 231}
     cartProducts.splice(index,1);
+    if (cartProducts.length === 1 && cartProducts[0].product.id === 11112222) {
+      deleteParcelMachine();
+    }
     setCartProducts(cartProducts.slice());
     sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
     toast.error('Edukalt eemaldatud ostukorvist!', {
@@ -47,36 +59,84 @@ function Cart() {
       });
   }
 
+  const [selectedPM, setSelectedPM] = useState(sessionStorage.getItem("parcelMachine"));
+  const parcelMachineRef = useRef();
 
-              // [{product: {TOODE}, quantity: 1}, {product: {TOODE}, quantity: 5}]
+  const addParcelMachine = () => {
+    setSelectedPM(parcelMachineRef.current.value);
+    const pm = {
+      product:
+      {id: 11112222, name: "Pakiautomaadi tasu", price: 3.5, imgSrc: require("../assets/locker.png")}, 
+      quantity:1
+    };
+    cartProducts.push(pm);
+    sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    sessionStorage.setItem("parcelMachine", parcelMachineRef.current.value);
+  }
+
+  const deleteParcelMachine = () => {
+    setSelectedPM(null);
+    cartProducts.pop();
+    sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
+    sessionStorage.removeItem("parcelMachine");
+  }
+
+  const emptyCart = () => {
+    setCartProducts([]);
+    sessionStorage.setItem("cartProducts", JSON.stringify([]));
+    deleteParcelMachine();
+  }
+
   return (<div>
-    <button>Tühjenda --- KOJU</button>
+    <button onClick={emptyCart}>Tühjenda --- KOJU</button>
     { cartProducts.map(element => 
     <div key={element.product.id} className="cartProduct">
       <img className="cartProductImg" src={element.product.imgSrc} alt="" />
       <div className="cartProductName">{element.product.name}</div>
       <div className="cartProductPrice">{element.product.price} €</div>
       <div className="cartProductQuantity">
-        <img className="cartProductButton" 
+       { element.product.id !== 11112222 && <img className="cartProductButton" 
              onClick={() => decreaseQuantity(element)} 
              src={require('../assets/minus.png')}
-             alt="" />
+             alt="" />}
         <div>{element.quantity} tk</div>
-        <img className="cartProductButton" 
+       { element.product.id !== 11112222 && <img className="cartProductButton" 
              onClick={() => increaseQuantity(element)} 
              src={require('../assets/plus.png')}
-             alt="" />
+             alt="" />}
       </div>
       <div className="cartProductTotal">{element.product.price * element.quantity} €</div>
-      <img className="cartProductButton" 
+      { element.product.id !== 11112222 && <img className="cartProductButton" 
              onClick={() => removeFromCart(element)} 
              src={require('../assets/delete.png')}
-             alt="" />
+             alt="" />}
       <br />
     </div>
     ) }
      <ToastContainer />
+     
+     
+     
+      
+     { selectedPM === null && cartProducts.length > 0 && 
+     <div>
+        <label>Vali automaat</label>
+        <select onChange={addParcelMachine} ref={parcelMachineRef}>
+        {parcelMachines.filter(element => element.A0_NAME === "EE").map(element => <option>{element.NAME}</option>)}
+        </select>
+      </div>}
+
+     { selectedPM !== null && 
+     <div>{selectedPM} <button onClick={deleteParcelMachine}>X</button> </div>}
+
     </div>)
 }
 
 export default Cart;
+
+// 1. ID kontroll AddProductis, et kõigil oleks unikaalne ID   input  onChange={}  -> kas  .findIndex(element => true/false)
+// 2. Pakiautomaadid Omniva.ee lehelt  -> fetch("omniva.ee/locations.json")
+// Neljapäev
+// 3. Props    child Components    return (<div><AddProduct  /></div>)
+// 4. MaintainProducts.jsx --->  kodus
+// 4. Otsinguvälja [ iphone 5  ]  -> näitab kõiki kellel on iPhone 5   .filter(element => true/false)

@@ -14,7 +14,19 @@ function AddProduct() {
   const categoryUrl = "https://react-5-2022-default-rtdb.europe-west1.firebasedatabase.app/categories.json";
   const [categories, setCategories] = useState([]);
   const { t } = useTranslation();
+  const [products, setProducts] = useState([]);
 
+  useEffect(()=>{
+    fetch(productsUrl)
+    .then(res => res.json())
+    .then(body => { 
+      const newArray = [];
+      for (const key in body) {
+        newArray.push(body[key])
+      }
+      setProducts(newArray);
+    })
+  },[]);
 
   useEffect(() => {
     fetch(categoryUrl).then(res => res.json()).then(body => {
@@ -62,10 +74,29 @@ function AddProduct() {
     // ---->fetch(url).then().then() <--- siia tuleb Firebase-st saadu
   }
 
+  const [message, setMessage] = useState(""); 
+
+  const checkIdUniqueness = () => {
+    console.log(typeof idRef.current.value);
+    const index = products.findIndex(element => Number(element.id) === Number(idRef.current.value));
+    // KUI EI LEITA, siis on index -1 ::   0   1   2   3   4   5  6  
+    if (index === -1) {
+      console.log("UNIKAALNE");
+      setMessage("");
+    } else {
+      console.log("MITTEUNIKAALNE");
+      setMessage("Sisestatud ID on mitteunikaalne")
+    }
+    if (idRef.current.value === "11112222") {
+      setMessage("Sisestasid pakiautomaadi ID");
+    }
+  }
+
   return (
   <div>
+    <div>{message}</div>
     <label>ID</label> <br />
-    <input ref={idRef} type="number" /> <br />
+    <input onChange={checkIdUniqueness} ref={idRef} type="number" /> <br />
     <label>{t('form.name')}</label> <br />
     <input ref={nameRef} type="text" /> <br />
     <label>{t('form.description')}</label> <br />
@@ -81,7 +112,7 @@ function AddProduct() {
     <input ref={imgSrcRef} type="text" /> <br />
     <label>Aktiivne</label> <br />
     <input ref={isActiveRef} type="checkbox" /> <br />
-    <button onClick={onAddProduct}>Sisesta</button>
+    <button disabled={message !== ""} onClick={onAddProduct}>Sisesta</button>
     <ToastContainer />
   </div>)
 }

@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 function YksikToode() {
   // NÄIDE: "fanta"       
   const { nimi } = useParams();
-  // console.log(nimi);
+  console.log(nimi);
   // const tooted = JSON.parse(localStorage.getItem("toode"));
   const [tooted, uuendaTooted] = useState([]);
 
@@ -16,6 +16,7 @@ function YksikToode() {
         for (const key in object) {
           tootedAndmebaasist.push(object[key])
         }
+        console.log(tootedAndmebaasist);
         uuendaTooted(tootedAndmebaasist);
       })
   },[]);
@@ -27,6 +28,7 @@ function YksikToode() {
   const leitud = tooted.find(element => element.nimi
       .toLowerCase().replaceAll(" ", "-").replaceAll(",", "").replaceAll("õ","o") === nimi );
   // const leitud = {nimi: "Fanta", hind: 2};
+  console.log(leitud);
   return (
   <div>
     {leitud && 
