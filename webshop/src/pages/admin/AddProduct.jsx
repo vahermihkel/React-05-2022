@@ -15,6 +15,7 @@ function AddProduct() {
   const [categories, setCategories] = useState([]);
   const { t } = useTranslation();
   const [products, setProducts] = useState([]);
+  const [message, setMessage] = useState(""); 
 
   useEffect(()=>{
     fetch(productsUrl)
@@ -73,8 +74,6 @@ function AddProduct() {
     // kui päringu tehtud sain, kas tahan midagi Firebase käest teada? -- jah, kõiki kategooriaid
     // ---->fetch(url).then().then() <--- siia tuleb Firebase-st saadu
   }
-
-  const [message, setMessage] = useState(""); 
 
   const checkIdUniqueness = () => {
     console.log(typeof idRef.current.value);

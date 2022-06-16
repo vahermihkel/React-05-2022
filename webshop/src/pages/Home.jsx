@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
+import FilterBar from "../components/FilterBar";
+import SortButtons from "../components/SortButtons";
 
 function Home() {
   const productsUrl = "https://react-5-2022-default-rtdb.europe-west1.firebasedatabase.app/products.json";
   const [products, setProducts] = useState([]);
+  const [originalProducts, setOriginalProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+
 
   useEffect(()=>{
     fetch(productsUrl)
@@ -14,10 +19,21 @@ function Home() {
       for (const key in body) {
         newArray.push(body[key])
       }
-      console.log(newArray);
       setProducts(newArray);
+      setOriginalProducts(newArray);
+      //[{category:"dad", ....},]  -> ["dad",]
+      let catFromProducts = newArray.map(element => element.category);
+      catFromProducts = [...new Set(catFromProducts)];
+      setCategories(catFromProducts);
     })
   },[]);
+
+  //x .forEach(element => summa = summa + hind);    .length korda   => alles kõik
+  //t .find(element => element.võti === urlParameeter);  tehakse senikaua kuni true => alles 1
+  //t .findIndex(element => element.id === klikitudese.id);  tehakse senikaua kuni true => alles index
+  //x .sort((a,b) => a.hind - b.hind ); tehakse senikaua kuni järjekorras  => alles kõik
+  //x .filter(element =>  element.võti === võrreldav )  .length korda => alles kõik kellel oli true
+  //x .map(element => uus-väärtus ) .length korda => alles kõik, aga uute väärtusega
   
   //    0                           1                        2 
   // [{nimi: "Coca", price: 5}, {nimi: "Coca", price: 5}, {nimi: "Coca", price: 5}]
@@ -52,32 +68,15 @@ function Home() {
   // 4. JSON.stringify()    <--- pean massiivi tegema jutumärkide kujule
   // 5. sessionStorage.setItem("VÕTI", UUED_TOOTED)   <--- pean panema sessionstorage-sse
 
-  const sortAZ = () => {
-   products.sort((a,b) => a.name.localeCompare(b.name)); // .name
-    setProducts(products.slice());
-  }
-
-  const sortZA = () => {
-    products.sort((a,b) => b.name.localeCompare(a.name)); // .name
-    setProducts(products.slice());
-  }
-
-  const sortPriceAsc = () => {
-    products.sort((a,b) => a.price - b.price); // .price
-    setProducts(products.slice());
-  }
-
-  const sortPriceDesc = () => {
-    products.sort((a,b) => b.price - a.price); // .price
-    setProducts(products.slice());
-  }
-
   return (
   <div>
-    <button onClick={sortAZ}>Sorteeri A-Z</button>
-    <button onClick={sortZA}>Sorteeri Z-A</button>
-    <button onClick={sortPriceAsc}>Sorteeri hind kasvavalt</button>
-    <button onClick={sortPriceDesc}>Sorteeri hind kahanevalt</button>
+    <FilterBar 
+      originalProducts={originalProducts} 
+      categories={categories}
+      setProducts={setProducts}
+      />
+    {products.length > 0 && <div>{products.length} tk</div>}
+    <SortButtons prods={products} setHomeProducts={setProducts} />
     <div>
       { products.map(element => 
       <div key={element.id}>

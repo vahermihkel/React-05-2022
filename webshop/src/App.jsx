@@ -4,6 +4,7 @@ import NavigationBar from './components/NavigationBar';
 import AddProduct from './pages/admin/AddProduct';
 import AdminHome from './pages/admin/AdminHome';
 import Category from './pages/admin/Category';
+import MaintainProducts from './pages/admin/MaintainProducts';
 import Cart from './pages/Cart';
 import Home from './pages/Home';
 import NotFound from './pages/NotFound';
@@ -19,6 +20,7 @@ function App() {
         <Route path='admin' exact element={ <AdminHome /> } />
         <Route path='admin/lisa-toode' exact element={ <AddProduct /> } />
         <Route path='admin/halda-kategooriaid' exact element={ <Category /> } />
+        <Route path='admin/halda-tooteid' exact element={ <MaintainProducts /> } />
         <Route path='poed' exact element={ <Shops /> } />
         <Route path='*' exact element={ <NotFound /> } />
       </Routes>

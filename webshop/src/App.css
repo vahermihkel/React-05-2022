@@ -6,3 +6,8 @@
 .map {
   height: 300px;
 }
+
+.active-category {
+  font-weight: bold;
+  text-decoration: underline;
+}

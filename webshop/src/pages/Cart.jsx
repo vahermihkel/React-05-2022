@@ -1,20 +1,12 @@
-import { useEffect } from "react";
-import { useRef } from "react";
 import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
+import ParcelMachines from "../components/ParcelMachines";
 import "../css/cart.css";
 
 function Cart() {
   const [cartProducts, setCartProducts] = useState(
         JSON.parse(sessionStorage.getItem("cartProducts")) || []
     );
-  const [parcelMachines, setParcelMachines] = useState([]);
-
-  useEffect(() => {
-    fetch("https://www.omniva.ee/locations.json")
-      .then(res => res.json())
-      .then(body => setParcelMachines(body))
-  },[]);
 
   const decreaseQuantity = (productClicked) => {
     const index = cartProducts.findIndex(element => element.product.id === productClicked.product.id);
@@ -49,7 +41,7 @@ function Cart() {
             //.find --> {id: 313123123, name:"iPhone X", price: 231}
     cartProducts.splice(index,1);
     if (cartProducts.length === 1 && cartProducts[0].product.id === 11112222) {
-      deleteParcelMachine();
+      // deleteParcelMachine(); !!!!!!
     }
     setCartProducts(cartProducts.slice());
     sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
@@ -59,36 +51,14 @@ function Cart() {
       });
   }
 
-  const [selectedPM, setSelectedPM] = useState(sessionStorage.getItem("parcelMachine"));
-  const parcelMachineRef = useRef();
-
-  const addParcelMachine = () => {
-    setSelectedPM(parcelMachineRef.current.value);
-    const pm = {
-      product:
-      {id: 11112222, name: "Pakiautomaadi tasu", price: 3.5, imgSrc: require("../assets/locker.png")}, 
-      quantity:1
-    };
-    cartProducts.push(pm);
-    sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-    sessionStorage.setItem("parcelMachine", parcelMachineRef.current.value);
-  }
-
-  const deleteParcelMachine = () => {
-    setSelectedPM(null);
-    cartProducts.pop();
-    sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-    sessionStorage.removeItem("parcelMachine");
-  }
-
   const emptyCart = () => {
     setCartProducts([]);
     sessionStorage.setItem("cartProducts", JSON.stringify([]));
-    deleteParcelMachine();
+    // deleteParcelMachine(); !!!!!!
   }
 
   return (<div>
-    <button onClick={emptyCart}>Tühjenda --- KOJU</button>
+    { cartProducts.length > 0 && <button onClick={emptyCart}>Tühjenda</button>}
     { cartProducts.map(element => 
     <div key={element.product.id} className="cartProduct">
       <img className="cartProductImg" src={element.product.imgSrc} alt="" />
@@ -114,20 +84,7 @@ function Cart() {
     </div>
     ) }
      <ToastContainer />
-     
-     
-     
-      
-     { selectedPM === null && cartProducts.length > 0 && 
-     <div>
-        <label>Vali automaat</label>
-        <select onChange={addParcelMachine} ref={parcelMachineRef}>
-        {parcelMachines.filter(element => element.A0_NAME === "EE").map(element => <option>{element.NAME}</option>)}
-        </select>
-      </div>}
-
-     { selectedPM !== null && 
-     <div>{selectedPM} <button onClick={deleteParcelMachine}>X</button> </div>}
+     <ParcelMachines cartProducts={cartProducts} setCProducts={setCartProducts} />
 
     </div>)
 }
