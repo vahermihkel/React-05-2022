@@ -85,7 +85,8 @@ function Cart() {
     ) }
      <ToastContainer />
      <ParcelMachines cartProducts={cartProducts} setCProducts={setCartProducts} />
-
+      <div>TÜHI OSTUKORV -- PILT</div>
+      <button>MAKSE -- KODUS</button>
     </div>)
 }
 

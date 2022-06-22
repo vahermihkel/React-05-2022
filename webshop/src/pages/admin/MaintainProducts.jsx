@@ -50,9 +50,47 @@ function MaintainProducts() {
     }).then(() => {
       setOriginalProducts(originalProducts.slice()); // uuendab originalProductse
       searchProducts(); // siin uuendab productse
+      toast.success('Edukalt kustutatud!', {
+        position: "bottom-right",
+        theme: "dark"
+        });
     })
-    
   }
+
+  const changeProductActive = (productClicked) => {
+    const index = originalProducts.indexOf(productClicked);
+    // [{0},{1}][1]  ===> {1}.isActive läheb vastupidiseks
+    originalProducts[index].isActive = !originalProducts[index].isActive;
+    sendProductsToDb();
+   }
+
+   const decreaseStock = (productClicked) => {
+    const index = originalProducts.indexOf(productClicked);
+    originalProducts[index].stock--;
+    sendProductsToDb();
+   }
+
+   const increaseStock = (productClicked) => {
+    const index = originalProducts.indexOf(productClicked);
+    if (originalProducts[index].stock === undefined) {
+      originalProducts[index].stock = 0;
+    }
+    originalProducts[index].stock++;
+    sendProductsToDb();
+   }
+
+   const sendProductsToDb = () => {
+    fetch(productsUrl, {
+      method: "PUT",
+      body: JSON.stringify(originalProducts),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    }).then(() => {
+      setOriginalProducts(originalProducts.slice()); // uuendab originalProductse
+      searchProducts(); // siin uuendab productse
+    })
+   }
 
   return (
   <div>
@@ -60,12 +98,19 @@ function MaintainProducts() {
     <span>{products.length}</span>
     <div>
       { products.map(element => 
-      <div key={element.id}>
-        <img src={element.imgSrc} alt="" />
-        <div>{element.name}</div>
-        <div>{element.description}</div>
-        <div>{element.price}</div>
-        <div>{element.id}</div>
+      <div className={`cartProduct ${element.isActive ? "active": "inactive"}`} key={element.id}>
+        <div onClick={() => changeProductActive(element)}>
+          <img className="cartProductImg" src={element.imgSrc} alt="" />
+          <div>{element.isActive + 0  }</div>
+          <div>{element.name}</div>
+          <div>{element.description}</div>
+          <div>{element.price}</div>
+          <div>{element.id}</div>
+        </div>
+        <button disabled={!element.stock} onClick={() => decreaseStock(element)}>-</button>
+        { element.stock ? <div>{element.stock} tk</div> : <div>0 tk</div>}
+        <button onClick={() => increaseStock(element)}>+</button>
+        <button>MUUDA --- KODUS</button>
         <button onClick={() => deleteProduct(element)}>X</button>
       </div>) 
       }
@@ -76,3 +121,14 @@ function MaintainProducts() {
 }
 
 export default MaintainProducts;
+
+// väljatõstmine ---> AdminProduct
+// pagination ---> admin lehel toodete lehekülgede kaupa vaatamine
+// piltide üleslaadimine ---> saadan failid e-mailile
+
+// e-mailile saatmine endale - tagasiside
+// muutmise juures ID-kontroll, saaks sama tagasi panna
+
+// Kogusummat muuta teises failis
+
+// proovitöö algusest lõpuni

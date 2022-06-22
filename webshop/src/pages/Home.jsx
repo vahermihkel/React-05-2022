@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
-import FilterBar from "../components/FilterBar";
-import SortButtons from "../components/SortButtons";
+import { ToastContainer } from 'react-toastify';
+import CarouselGallery from "../components/home/CarouselGallery";
+import FilterBar from "../components/home/FilterBar";
+import Product from "../components/home/Product";
+import SortButtons from "../components/home/SortButtons";
 
 function Home() {
   const productsUrl = "https://react-5-2022-default-rtdb.europe-west1.firebasedatabase.app/products.json";
   const [products, setProducts] = useState([]);
   const [originalProducts, setOriginalProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-
 
   useEffect(()=>{
     fetch(productsUrl)
@@ -17,7 +18,10 @@ function Home() {
       // body === {-asdeqdasd: {TOODE}}   --> [{TOODE}]
       const newArray = [];
       for (const key in body) {
-        newArray.push(body[key])
+        const product = body[key];
+        if (product.isActive && product.stock > 0) {
+          newArray.push(product);
+        }
       }
       setProducts(newArray);
       setOriginalProducts(newArray);
@@ -40,52 +44,21 @@ function Home() {
   // [{toode: {id: 1238, nimi: "Coca", price: 5}, kogus: 1}]
   // objekti sisse tekib teine objekt
   //            {id: 1238, nimi: "Coca", price: 5}
-  const addToCart = (productClicked) => {
-    let cProducts = JSON.parse(sessionStorage.getItem("cartProducts")) || [];
-    // cProducts = cProducts) || [];
-    const index = cProducts.findIndex(element => element.product.id === productClicked.id);
-    if (index >= 0) {
-      cProducts[index].quantity = cProducts[index].quantity + 1;
-    } else {
-      const index = cProducts.findIndex(element => element.product.id === 11112222);
-      if (index > 0) {
-        cProducts.splice(cProducts.length-1, 0, {"product": productClicked, "quantity": 1});
-      } else {
-        cProducts.push({"product": productClicked, "quantity": 1});
-      }
-    }
-    cProducts = JSON.stringify(cProducts);
-    sessionStorage.setItem("cartProducts", cProducts);
-    toast.success('Edukalt lisatud ostukorvi!', {
-      position: "bottom-right",
-      theme: "dark"
-      });
-  }
-
-  // 1. sessionStorage.getItem("") <--- võtan sessionStorage-st
-  // 2. JSON.parse() <--- Võtan jutumärgid maha 
-  // 3. .push()   <--- lisan juurde
-  // 4. JSON.stringify()    <--- pean massiivi tegema jutumärkide kujule
-  // 5. sessionStorage.setItem("VÕTI", UUED_TOOTED)   <--- pean panema sessionstorage-sse
-
+  
   return (
   <div>
-    <FilterBar 
+    <CarouselGallery />
+    {categories > 1 && <FilterBar 
       originalProducts={originalProducts} 
       categories={categories}
       setProducts={setProducts}
-      />
+      />}
     {products.length > 0 && <div>{products.length} tk</div>}
     <SortButtons prods={products} setHomeProducts={setProducts} />
     <div>
-      { products.map(element => 
-      <div key={element.id}>
-        <img src={element.imgSrc} alt="" />
-        <div>{element.name}</div>
-        <div>{element.price}</div>
-        <div>{element.id}</div>
-        <button onClick={() => addToCart(element)}>Lisa ostukorvi</button>
-      </div>) 
+      { products.map(el => 
+        <Product key={el.id} element={el} />
+      ) 
       }
     </div>
     <ToastContainer />
