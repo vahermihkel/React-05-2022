@@ -1,121 +1,105 @@
-import { useRef } from "react";
-import { useEffect, useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
+import { Pagination } from "react-bootstrap";
+import { useEffect, useRef, useState } from "react";
+import { ToastContainer } from 'react-toastify';
+import AdminProduct from "../../components/AdminProduct";
 
 function MaintainProducts() {
   const productsUrl = "https://react-5-2022-default-rtdb.europe-west1.firebasedatabase.app/products.json";
-  const [products, setProducts] = useState([]);
+  const [shownProducts, setShownProducts] = useState([]);
   const [originalProducts, setOriginalProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const searchedProductRef = useRef();
+  const [activePage, setActivePage] = useState(1);
+  const [pages, setPages] = useState([]); // originaal: [1,2,3,4,5]  ---> 239    [1,2,3,4,5,6,7,8,9,10,11,12.....]
 
   useEffect(()=>{
     fetch(productsUrl)
     .then(res => res.json())
     .then(body => {
       const newArray = [];
+      let pagesArray = [];
+      let counter = 0;
       for (const key in body) {
         newArray.push(body[key])
+        if (counter%10 === 0) {
+          pagesArray.push(counter/10+1);
+        }
+        counter++;
+        // counter += 1;
+        // counter = counter + 1;
       }
-      setProducts(newArray);
+      setPages(pagesArray);
+      setFilteredProducts(newArray);
+      setShownProducts(newArray.slice(0,10));
       setOriginalProducts(newArray);
     })
   },[]);
 
-  const searchProducts = () => {
+  const searchProducts = (origin) => {
     //      0                   1                         1
     // ["Apple iPhone X", "Apple iPhone 5"].indexOf("Apple iPhone 5")
     //  
     // "Apple iPhone X".indexOf("honey")  --> -1
     const searched = searchedProductRef.current.value.toLowerCase();
 
-    const filteredProducts = originalProducts.filter(
+    const filteredProductsArray = originalProducts.filter(
       element => element.name.toLowerCase().indexOf(searched) >= 0 ||
           element.description.toLowerCase().indexOf(searched) >= 0 ||
                       element.id.toString().indexOf(searched) >= 0
       );
-    setProducts(filteredProducts);
+    setFilteredProducts(filteredProductsArray)
+    let pagesArray = [];
+    let counter = 0;
+    filteredProductsArray.forEach(element => {
+      if (counter%10 === 0) {
+        pagesArray.push(counter/10+1);
+      }
+      counter++;
+    });
+    setPages(pagesArray);
+    if (origin === 'updated') {
+      // if (activePage > pages.length) {
+      //   setActivePage(pages.length);
+      // }
+      setShownProducts(filteredProducts.slice((activePage-1)*10,activePage*10));
+    } else {
+      setActivePage(1);
+      setShownProducts(filteredProductsArray.slice(0,10));
+    }
   }
 
-  const deleteProduct = (productClicked) => {
-    const index = originalProducts.findIndex(element => element.id === productClicked.id);
-    if (index >= 0) { // kui ei leita üles, index on -1
-      originalProducts.splice(index,1); // kui index -1 abil tehakse splice(), siis kustutatakse lõpust
-    }
-    fetch(productsUrl, {
-      method: "PUT",
-      body: JSON.stringify(originalProducts),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(() => {
-      setOriginalProducts(originalProducts.slice()); // uuendab originalProductse
-      searchProducts(); // siin uuendab productse
-      toast.success('Edukalt kustutatud!', {
-        position: "bottom-right",
-        theme: "dark"
-        });
-    })
+  const changePage = (number) => {
+    setActivePage(number);
+    //   1       0,10
+    //   2       10,20
+    //   3       20,30
+    setShownProducts(filteredProducts.slice((number-1)*10,number*10));
   }
-
-  const changeProductActive = (productClicked) => {
-    const index = originalProducts.indexOf(productClicked);
-    // [{0},{1}][1]  ===> {1}.isActive läheb vastupidiseks
-    originalProducts[index].isActive = !originalProducts[index].isActive;
-    sendProductsToDb();
-   }
-
-   const decreaseStock = (productClicked) => {
-    const index = originalProducts.indexOf(productClicked);
-    originalProducts[index].stock--;
-    sendProductsToDb();
-   }
-
-   const increaseStock = (productClicked) => {
-    const index = originalProducts.indexOf(productClicked);
-    if (originalProducts[index].stock === undefined) {
-      originalProducts[index].stock = 0;
-    }
-    originalProducts[index].stock++;
-    sendProductsToDb();
-   }
-
-   const sendProductsToDb = () => {
-    fetch(productsUrl, {
-      method: "PUT",
-      body: JSON.stringify(originalProducts),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(() => {
-      setOriginalProducts(originalProducts.slice()); // uuendab originalProductse
-      searchProducts(); // siin uuendab productse
-    })
-   }
 
   return (
   <div>
-    <input onChange={searchProducts} ref={searchedProductRef} type="text" />
-    <span>{products.length}</span>
+    <input onChange={() => searchProducts('searched')} ref={searchedProductRef} type="text" />
+    <span>{filteredProducts.length}</span>
     <div>
-      { products.map(element => 
-      <div className={`cartProduct ${element.isActive ? "active": "inactive"}`} key={element.id}>
-        <div onClick={() => changeProductActive(element)}>
-          <img className="cartProductImg" src={element.imgSrc} alt="" />
-          <div>{element.isActive + 0  }</div>
-          <div>{element.name}</div>
-          <div>{element.description}</div>
-          <div>{element.price}</div>
-          <div>{element.id}</div>
-        </div>
-        <button disabled={!element.stock} onClick={() => decreaseStock(element)}>-</button>
-        { element.stock ? <div>{element.stock} tk</div> : <div>0 tk</div>}
-        <button onClick={() => increaseStock(element)}>+</button>
-        <button>MUUDA --- KODUS</button>
-        <button onClick={() => deleteProduct(element)}>X</button>
-      </div>) 
+      { shownProducts.map(element => 
+         <AdminProduct 
+            key={element.id}
+            element={element}
+            originalProducts={originalProducts}
+            setOriginalProducts={setOriginalProducts}
+            searchProducts={searchProducts}
+         />
+      ) 
       }
     </div>
     <ToastContainer />
+    { pages.length > 1 && <Pagination>
+      {pages.map(number => 
+        <Pagination.Item key={number} onClick={() => changePage(number)} active={number === activePage}>
+          {number}
+        </Pagination.Item>
+      )}
+    </Pagination>}
   </div>
     )
 }
