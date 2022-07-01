@@ -70,9 +70,6 @@ function MaintainProducts() {
 
   const changePage = (number) => {
     setActivePage(number);
-    //   1       0,10
-    //   2       10,20
-    //   3       20,30
     setShownProducts(filteredProducts.slice((number-1)*10,number*10));
   }
 
@@ -106,13 +103,17 @@ function MaintainProducts() {
 
 export default MaintainProducts;
 
-// väljatõstmine ---> AdminProduct
-// pagination ---> admin lehel toodete lehekülgede kaupa vaatamine
-// piltide üleslaadimine ---> saadan failid e-mailile
-
+// spinner / loader
 // e-mailile saatmine endale - tagasiside
-// muutmise juures ID-kontroll, saaks sama tagasi panna
 
+// 05.07
+// proovitöö algusest lõpuni
+// muutmise juures ID-kontroll, saaks sama tagasi panna
+// piltide üleslaadimine ---> saadan failid e-mailile
 // Kogusummat muuta teises failis
 
-// proovitöö algusest lõpuni
+// 07.07
+// Projektide lühiülevaade ja kuidas teha
+
+// 21.07    17.30-20.30
+// projektide ülevaade (ja minupoolne ütlemine LIVE programmeerimine) ja kokkuvõte koolitusest

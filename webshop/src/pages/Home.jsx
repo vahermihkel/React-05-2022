@@ -4,12 +4,14 @@ import CarouselGallery from "../components/home/CarouselGallery";
 import FilterBar from "../components/home/FilterBar";
 import Product from "../components/home/Product";
 import SortButtons from "../components/home/SortButtons";
+import Spinner from "../components/Spinner";
 
 function Home() {
   const productsUrl = "https://react-5-2022-default-rtdb.europe-west1.firebasedatabase.app/products.json";
   const [products, setProducts] = useState([]);
   const [originalProducts, setOriginalProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(()=>{
     fetch(productsUrl)
@@ -29,6 +31,7 @@ function Home() {
       let catFromProducts = newArray.map(element => element.category);
       catFromProducts = [...new Set(catFromProducts)];
       setCategories(catFromProducts);
+      setLoading(false);
     })
   },[]);
 
@@ -53,6 +56,7 @@ function Home() {
       categories={categories}
       setProducts={setProducts}
       />}
+    {isLoading && <Spinner />}
     {products.length > 0 && <div>{products.length} tk</div>}
     <SortButtons prods={products} setHomeProducts={setProducts} />
     <div>

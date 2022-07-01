@@ -1,6 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import NavigationBar from './components/NavigationBar';
+import AboutUs from './pages/AboutUs';
 import AddProduct from './pages/admin/AddProduct';
 import AdminHome from './pages/admin/AdminHome';
 import Category from './pages/admin/Category';
@@ -22,6 +23,7 @@ function App() {
         <Route path='admin/halda-kategooriaid' exact element={ <Category /> } />
         <Route path='admin/halda-tooteid' exact element={ <MaintainProducts /> } />
         <Route path='poed' exact element={ <Shops /> } />
+        <Route path='meist' exact element={ <AboutUs /> } />
         <Route path='*' exact element={ <NotFound /> } />
       </Routes>
     </div>
