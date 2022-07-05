@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import FileUpload from "../../components/FileUpload";
 
 function AddProduct() {
   const idRef = useRef();
@@ -46,7 +47,7 @@ function AddProduct() {
       description: descriptionRef.current.value,
       category: categoryRef.current.value,
       price: priceRef.current.value,
-      imgSrc: imgSrcRef.current.value,
+      imgSrc: showUrlUpload ? imgSrcRef.current.value : imageUrl,
       isActive: isActiveRef.current.checked,
     }
     fetch(productsUrl,
@@ -91,6 +92,21 @@ function AddProduct() {
     }
   }
 
+  const [imageUrl, setImageUrl] = useState("");
+
+  const urlRef = useRef();
+  const uploadRef = useRef();
+
+  const [showUrlUpload, setShowUrlUpload] = useState(true);
+
+  const radioChecked = () => {
+    if (urlRef.current.checked) {
+      setShowUrlUpload(true);
+    } else {
+      setShowUrlUpload(false);
+    }
+  }
+
   return (
   <div>
     <div>{message}</div>
@@ -108,7 +124,13 @@ function AddProduct() {
     <label>Hind</label> <br />
     <input ref={priceRef} type="number" /> <br />
     <label>Pilt</label> <br />
-    <input ref={imgSrcRef} type="text" /> <br />
+    <input ref={urlRef} onChange={radioChecked} type="radio" defaultChecked id="url" name="image_source"/>
+    <label for="url">URLina</label><br />
+    <input ref={uploadRef} onChange={radioChecked} type="radio" id="upload" name="image_source"/>
+    <label for="upload">Laen ise üles</label><br />
+    {showUrlUpload === true && <input ref={imgSrcRef} type="text" />}
+    {showUrlUpload === false && <FileUpload onSendPictureUrl={setImageUrl} />}
+    <br />
     <label>Aktiivne</label> <br />
     <input ref={isActiveRef} type="checkbox" /> <br />
     <button disabled={message !== ""} onClick={onAddProduct}>Sisesta</button>

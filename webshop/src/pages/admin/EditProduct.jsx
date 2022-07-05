@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import Spinner from "../../components/Spinner";
 
@@ -21,6 +22,7 @@ function EditProduct() {
   const { id } = useParams();
   const [product, setProduct] = useState();
   const [index, setIndex] = useState(-1);
+  const navigate = useNavigate();
 
   useEffect(()=>{
     fetch(productsUrl)
@@ -36,7 +38,7 @@ function EditProduct() {
       setIndex(productIndex);
       setProduct(productFound);
     })
-  },[]);
+  },[id]);
 
   useEffect(() => {
     fetch(categoryUrl).then(res => res.json()).then(body => {
@@ -68,27 +70,23 @@ function EditProduct() {
               "Content-Type": "application/json"
             }
         }
-      )
-  
-      toast.success(t('editproduct.edited'), {
-        position: "bottom-right",
-        theme: "dark"
-        });
+      ).then(() => navigate("/admin/halda-tooteid"))
+      
+      // toast.success(t('editproduct.edited'), {
+      //   position: "bottom-right",
+      //   theme: "dark"
+      //   });
     }
   }
 
   const checkIdUniqueness = () => {
-    console.log(typeof idRef.current.value);
     const index = products.findIndex(element => Number(element.id) === Number(idRef.current.value));
-    if (index === -1) {
-      console.log("UNIKAALNE");
+    if (index === -1 || idRef.current.value === product.id) {
       setMessage("");
-    } else {
-      console.log("MITTEUNIKAALNE");
-      setMessage("Sisestatud ID on mitteunikaalne")
-    }
-    if (idRef.current.value === "11112222") {
+    } else if (idRef.current.value === "11112222") {
       setMessage("Sisestasid pakiautomaadi ID");
+    } else {
+      setMessage("Sisestatud ID on mitteunikaalne");
     }
   }
 

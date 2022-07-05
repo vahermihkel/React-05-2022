@@ -61,6 +61,7 @@ function MaintainProducts() {
       // if (activePage > pages.length) {
       //   setActivePage(pages.length);
       // }
+      console.log("LÄHEN SIIA");
       setShownProducts(filteredProducts.slice((activePage-1)*10,activePage*10));
     } else {
       setActivePage(1);
@@ -110,9 +111,10 @@ export default MaintainProducts;
 // proovitöö algusest lõpuni
 // muutmise juures ID-kontroll, saaks sama tagasi panna
 // piltide üleslaadimine ---> saadan failid e-mailile
-// Kogusummat muuta teises failis
 
 // 07.07
+// Kogusummat muuta teises failis
+// kujundus + Material UI kasutusele võtmine
 // Projektide lühiülevaade ja kuidas teha
 
 // 21.07    17.30-20.30

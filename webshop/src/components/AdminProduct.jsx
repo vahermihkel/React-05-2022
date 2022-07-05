@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
 // ffc
 // Simple React Snippets (Burke Holland)
 function AdminProduct(props) {
@@ -41,24 +41,29 @@ function AdminProduct(props) {
    }
 
   const deleteProduct = (productClicked) => {
+    console.log(productClicked);
     const index = props.originalProducts.findIndex(element => element.id === productClicked.id);
+    console.log(index);
+    console.log(props.originalProducts);
     if (index >= 0) { // kui ei leita üles, index on -1
       props.originalProducts.splice(index,1); // kui index -1 abil tehakse splice(), siis kustutatakse lõpust
     }
-    fetch(productsUrl, {
-      method: "PUT",
-      body: JSON.stringify(props.originalProducts),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    }).then(() => {
-      props.setOriginalProducts(props.originalProducts.slice()); // uuendab originalProductse
-      props.searchProducts('updated'); // siin uuendab productse
-      toast.success('Edukalt kustutatud!', {
-        position: "bottom-right",
-        theme: "dark"
-        });
-    })
+    console.log(props.originalProducts);
+    sendProductsToDb();
+    // fetch(productsUrl, {
+    //   method: "PUT",
+    //   body: JSON.stringify(props.originalProducts),
+    //   headers: {
+    //     "Content-Type": "application/json"
+    //   }
+    // }).then(() => {
+    //   props.setOriginalProducts(props.originalProducts.slice()); // uuendab originalProductse
+    //   props.searchProducts('updated'); // siin uuendab productse
+    //   toast.success('Edukalt kustutatud!', {
+    //     position: "bottom-right",
+    //     theme: "dark"
+    //     });
+    // })
   }
 
 
