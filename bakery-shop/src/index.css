@@ -10,3 +10,11 @@ a {
 .container {
   margin-top: 50px;
 }
+
+td:first-child {
+  font-weight: bold
+}
+
+.red-quantity {
+  color: red;
+}

@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 // ffc
 // Simple React Snippets (Burke Holland)
@@ -74,7 +75,9 @@ function AdminProduct(props) {
         <button disabled={!props.element.stock} onClick={() => decreaseStock(props.element)}>-</button>
         { props.element.stock ? <div>{props.element.stock} tk</div> : <div>0 tk</div>}
         <button onClick={() => increaseStock(props.element)}>+</button>
-        <button>MUUDA --- KODUS</button>
+        <Link to={`/admin/muuda/${props.element.id}`}>
+          <button>Muuda</button>
+        </Link>
         <button onClick={() => deleteProduct(props.element)}>X</button>
       </div>
    );

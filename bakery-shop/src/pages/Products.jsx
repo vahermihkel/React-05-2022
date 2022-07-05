@@ -44,12 +44,12 @@ function Products() {
         </thead>
         <tbody>
         {/* TODO: Order the products by price */}
-        {products.map(product => 
+        {products.sort((a,b)=>a.price - b.price).map(product => 
             <tr key={product.name + product.price}>
               <td>{product.name}</td>
               <td>{product.price}</td>
               {/*  TODO: Display the quantity in red if it is lower than 3 */}
-              <td>{product.quantity}</td> 
+              <td className={product.quantity < 3 ? 'red-quantity' : undefined}>{product.quantity}</td> 
               <td>{product.store}</td>
             </tr>
           )}
