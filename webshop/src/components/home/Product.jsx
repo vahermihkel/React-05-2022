@@ -1,4 +1,5 @@
 import { toast } from 'react-toastify';
+import { sumOfCartService } from '../../store/sumOfCartService';
 
 function Product(props) {
 
@@ -16,6 +17,10 @@ function Product(props) {
         cProducts.push({"product": productClicked, "quantity": 1});
       }
     }
+    let sumOfCart = 0;
+    cProducts.forEach(element => sumOfCart += element.product.price * element.quantity);
+    sumOfCartService.sendCartSum(sumOfCart);
+
     cProducts = JSON.stringify(cProducts);
     sessionStorage.setItem("cartProducts", cProducts);
     toast.success('Edukalt lisatud ostukorvi!', {

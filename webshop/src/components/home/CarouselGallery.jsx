@@ -18,7 +18,7 @@ function CarouselGallery() {
 
   return (
     <Carousel>
-      { images.map(element => <Carousel.Item>
+      { images.map((element, index) => <Carousel.Item key={index}>
         <img src={element.src} alt={element.alt} />
         <Carousel.Caption>
           <h3>{element.header}</h3>

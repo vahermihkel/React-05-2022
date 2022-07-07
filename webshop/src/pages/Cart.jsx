@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ToastContainer, toast } from 'react-toastify';
 import ParcelMachines from "../components/ParcelMachines";
 import "../css/cart.css";
+import { sumOfCartService } from '../store/sumOfCartService';
 
 function Cart() {
   const [cartProducts, setCartProducts] = useState(
@@ -15,24 +16,14 @@ function Cart() {
     if (cartProducts[index].quantity === 0) {
       removeFromCart(productClicked);
     } else {
-      setCartProducts(cartProducts.slice());
-      sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-      toast.warning('Edukalt vähendatud kogust!', {
-        position: "bottom-right",
-        theme: "dark"
-        });
+      updateCart();
     }
   }
 
   const increaseQuantity = (productClicked) => {
     const index = cartProducts.findIndex(element => element.product.id === productClicked.product.id);
     cartProducts[index].quantity = cartProducts[index].quantity + 1;
-    setCartProducts(cartProducts.slice());
-    sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-    toast.warning('Edukalt suurendatud kogust!', {
-      position: "bottom-right",
-      theme: "dark"
-      });
+    updateCart();
   }
 
   const removeFromCart = (productClicked) => { // MOZILLA --> findIndex()
@@ -43,18 +34,26 @@ function Cart() {
     if (cartProducts.length === 1 && cartProducts[0].product.id === 11112222) {
       // deleteParcelMachine(); !!!!!!
     }
+    updateCart();
+  }
+
+  const updateCart = () => {
     setCartProducts(cartProducts.slice());
     sessionStorage.setItem("cartProducts", JSON.stringify(cartProducts));
-    toast.error('Edukalt eemaldatud ostukorvist!', {
-      position: "bottom-right",
-      theme: "dark"
-      });
+    sumOfCartService.sendCartSum(calculateSumOfCart());
   }
 
   const emptyCart = () => {
     setCartProducts([]);
     sessionStorage.setItem("cartProducts", JSON.stringify([]));
+    sumOfCartService.sendCartSum(0);
     // deleteParcelMachine(); !!!!!!
+  }
+
+  const calculateSumOfCart = () => {
+    let sumOfCart = 0;
+    cartProducts.forEach(element => sumOfCart += element.product.price * element.quantity);
+    return sumOfCart;
   }
 
   return (<div>
@@ -75,7 +74,7 @@ function Cart() {
              src={require('../assets/plus.png')}
              alt="" />}
       </div>
-      <div className="cartProductTotal">{element.product.price * element.quantity} €</div>
+      <div className="cartProductTotal">{(element.product.price * element.quantity).toFixed(2)} €</div>
       { element.product.id !== 11112222 && <img className="cartProductButton" 
              onClick={() => removeFromCart(element)} 
              src={require('../assets/delete.png')}
@@ -85,6 +84,7 @@ function Cart() {
     ) }
      <ToastContainer />
      <ParcelMachines cartProducts={cartProducts} setCProducts={setCartProducts} />
+     <div>{calculateSumOfCart().toFixed(2)}</div>
       <div>TÜHI OSTUKORV -- PILT</div>
       <button>MAKSE -- KODUS</button>
     </div>)

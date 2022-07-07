@@ -125,9 +125,9 @@ function AddProduct() {
     <input ref={priceRef} type="number" /> <br />
     <label>Pilt</label> <br />
     <input ref={urlRef} onChange={radioChecked} type="radio" defaultChecked id="url" name="image_source"/>
-    <label for="url">URLina</label><br />
+    <label htmlFor="url">URLina</label><br />
     <input ref={uploadRef} onChange={radioChecked} type="radio" id="upload" name="image_source"/>
-    <label for="upload">Laen ise üles</label><br />
+    <label htmlFor="upload">Laen ise üles</label><br />
     {showUrlUpload === true && <input ref={imgSrcRef} type="text" />}
     {showUrlUpload === false && <FileUpload onSendPictureUrl={setImageUrl} />}
     <br />
